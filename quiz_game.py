@@ -59,3 +59,44 @@ class QuizGame:
                 1
             )
         ]
+
+    def show_menu(self):
+        print("\n===== 나만의 퀴즈 게임 =====")
+        print("1. 퀴즈 풀기")
+        print("2. 퀴즈 추가")
+        print("3. 퀴즈 목록")
+        print("4. 점수 확인")
+        print("5. 종료")
+
+    def play_quiz(self):
+        score = 0
+
+        print("\n퀴즈를 시작합니다!")
+
+        for index, quiz in enumerate(self.quizzes, start=1):
+            print(f"\n[문제 {index}]")
+
+            quiz.display()
+
+            answer = input("정답 번호를 입력하세요: ")
+
+            try:
+                answer = int(answer)
+
+                if quiz.check_answer(answer):
+                    print("정답입니다!")
+                    score += 1
+                else:
+                    print("오답입니다.")
+
+            except ValueError:
+                print("숫자를 입력하세요.")
+
+        print(
+            f"\n결과: {len(self.quizzes)}문제 중 "
+            f"{score}문제 정답"
+        )
+
+        if score > self.best_score:
+            self.best_score = score
+            print("새로운 최고 점수입니다!")
