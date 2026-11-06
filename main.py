@@ -5,12 +5,16 @@ def main():
     game = QuizGame()
 
     while True:
+
         game.show_menu()
 
         choice = input("선택: ")
 
         if choice == "1":
             game.play_quiz()
+
+        elif choice == "2":
+            game.add_quiz()
 
         elif choice == "3":
             game.show_quizzes()
@@ -23,7 +27,9 @@ def main():
             break
 
         else:
-            print("올바른 메뉴 번호를 입력하세요.")
+            print(
+                "1~5 사이 숫자를 입력하세요."
+            )
 
 
 if __name__ == "__main__":
