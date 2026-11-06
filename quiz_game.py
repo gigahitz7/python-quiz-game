@@ -87,16 +87,22 @@ class QuizGame:
                     print("정답입니다!")
                     score += 1
                 else:
-                    print("오답입니다.")
+                    print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
 
             except ValueError:
                 print("숫자를 입력하세요.")
 
-        print(
-            f"\n결과: {len(self.quizzes)}문제 중 "
-            f"{score}문제 정답"
-        )
+        print(f"\n결과: {len(self.quizzes)}문제 중 {score}문제 정답")
 
         if score > self.best_score:
             self.best_score = score
             print("새로운 최고 점수입니다!")
+
+    def show_quizzes(self):
+        print("\n===== 등록된 퀴즈 =====")
+
+        for index, quiz in enumerate(self.quizzes, start=1):
+            print(f"{index}. {quiz.question}")
+
+    def show_score(self):
+        print(f"\n현재 최고 점수: {self.best_score}")
