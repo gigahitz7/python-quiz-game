@@ -5,7 +5,6 @@ def main():
     game = QuizGame()
 
     while True:
-
         game.show_menu()
 
         choice = input("선택: ")
@@ -23,6 +22,8 @@ def main():
             game.show_score()
 
         elif choice == "5":
+            game.save_data()
+
             print("프로그램을 종료합니다.")
             break
 

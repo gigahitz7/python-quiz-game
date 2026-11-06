@@ -1,4 +1,15 @@
 {
-    "quizzes": [],
+    "quizzes": [
+        {
+            "question": "현재 수강중인 CODYSSEY의 과정은?",
+            "choices": [
+                "홀인원",
+                "올퍼원",
+                "올인원",
+                "콜대원"
+            ],
+            "answer": 3
+        }
+    ],
     "best_score": 0
 }

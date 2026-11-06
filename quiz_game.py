@@ -1,3 +1,6 @@
+import json
+import os
+
 from quiz import Quiz
 
 
@@ -5,6 +8,8 @@ class QuizGame:
     def __init__(self):
         self.quizzes = self.create_default_quizzes()
         self.best_score = 0
+
+        self.load_data()
 
     def create_default_quizzes(self):
         return [
@@ -78,10 +83,10 @@ class QuizGame:
 
             quiz.display()
 
-            answer = input("정답 번호를 입력하세요: ")
-
             try:
-                answer = int(answer)
+                answer = int(
+                    input("정답 번호를 입력하세요: ")
+                )
 
                 if quiz.check_answer(answer):
                     print("정답입니다!")
@@ -101,6 +106,8 @@ class QuizGame:
 
         if score > self.best_score:
             self.best_score = score
+            self.save_data()
+
             print("새로운 최고 점수입니다!")
 
     def add_quiz(self):
@@ -128,6 +135,8 @@ class QuizGame:
 
         self.quizzes.append(new_quiz)
 
+        self.save_data()
+
         print("퀴즈가 추가되었습니다.")
 
     def show_quizzes(self):
@@ -145,3 +154,60 @@ class QuizGame:
             f"\n최고 점수 : "
             f"{self.best_score}"
         )
+
+    def save_data(self):
+        data = {
+            "quizzes": [
+                quiz.to_dict()
+                for quiz in self.quizzes
+            ],
+            "best_score": self.best_score
+        }
+
+        with open(
+                "state.json",
+                "w",
+                encoding="utf-8") as file:
+
+            json.dump(
+                data,
+                file,
+                ensure_ascii=False,
+                indent=4
+            )
+
+    def load_data(self):
+        if not os.path.exists("state.json"):
+            return
+
+        try:
+            with open(
+                    "state.json",
+                    "r",
+                    encoding="utf-8") as file:
+
+                data = json.load(file)
+
+            self.best_score = data.get(
+                "best_score",
+                0
+            )
+
+            self.quizzes = []
+
+            for item in data.get(
+                    "quizzes",
+                    []
+            ):
+                self.quizzes.append(
+                    Quiz(
+                        item["question"],
+                        item["choices"],
+                        item["answer"]
+                    )
+                )
+
+        except Exception:
+            print(
+                "저장 파일이 손상되었습니다."
+            )
