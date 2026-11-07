@@ -1,18 +1,11 @@
-import json
-import os
-
 from quiz import Quiz
 
 
 class QuizGame:
     def __init__(self):
-        self.quizzes = self.create_default_quizzes()
         self.best_score = 0
 
-        self.load_data()
-
-    def create_default_quizzes(self):
-        return [
+        self.quizzes = [
             Quiz(
                 "Python의 창시자는?",
                 [
@@ -32,36 +25,6 @@ class QuizGame:
                     "<>"
                 ],
                 3
-            ),
-            Quiz(
-                "True와 False의 자료형은?",
-                [
-                    "int",
-                    "bool",
-                    "float",
-                    "dict"
-                ],
-                2
-            ),
-            Quiz(
-                "함수를 정의할 때 사용하는 키워드는?",
-                [
-                    "func",
-                    "define",
-                    "def",
-                    "class"
-                ],
-                3
-            ),
-            Quiz(
-                "조건문에 사용하는 키워드는?",
-                [
-                    "if",
-                    "for",
-                    "while",
-                    "class"
-                ],
-                1
             )
         ]
 
@@ -71,143 +34,76 @@ class QuizGame:
         print("2. 퀴즈 추가")
         print("3. 퀴즈 목록")
         print("4. 점수 확인")
-        print("5. 종료")
+        print("5. 퀴즈 삭제")
+        print("6. 종료")
 
     def play_quiz(self):
         score = 0
 
-        print("\n퀴즈를 시작합니다!")
-
-        for index, quiz in enumerate(self.quizzes, start=1):
-            print(f"\n[문제 {index}]")
-
+        for quiz in self.quizzes:
             quiz.display()
 
-            try:
-                answer = int(
-                    input("정답 번호를 입력하세요: ")
-                )
+            answer = int(
+                input("정답 번호: ")
+            )
 
-                if quiz.check_answer(answer):
-                    print("정답입니다!")
-                    score += 1
-                else:
-                    print(
-                        f"오답입니다. 정답은 {quiz.answer}번입니다."
-                    )
+            if quiz.check_answer(answer):
+                print("정답!")
+                score += 1
+            else:
+                print("오답!")
 
-            except ValueError:
-                print("숫자를 입력하세요.")
-
-        print(
-            f"\n결과 : {len(self.quizzes)}문제 중 "
-            f"{score}문제 정답"
-        )
+        print(f"점수: {score}")
 
         if score > self.best_score:
             self.best_score = score
-            self.save_data()
-
-            print("새로운 최고 점수입니다!")
 
     def add_quiz(self):
-        print("\n새로운 퀴즈를 추가합니다.")
-
-        question = input("문제 : ")
+        question = input("문제: ")
 
         choices = []
 
         for i in range(1, 5):
-            choice = input(
-                f"선택지 {i} : "
+            choices.append(
+                input(f"선택지 {i}: ")
             )
-            choices.append(choice)
 
         answer = int(
-            input("정답 번호 (1~4): ")
+            input("정답 번호: ")
         )
 
-        new_quiz = Quiz(
-            question,
-            choices,
-            answer
+        self.quizzes.append(
+            Quiz(
+                question,
+                choices,
+                answer
+            )
         )
 
-        self.quizzes.append(new_quiz)
-
-        self.save_data()
-
-        print("퀴즈가 추가되었습니다.")
+        print("퀴즈 추가 완료")
 
     def show_quizzes(self):
-        print("\n===== 등록된 퀴즈 =====")
-
-        for index, quiz in enumerate(
-                self.quizzes,
-                start=1):
+        for i, quiz in enumerate(
+            self.quizzes,
+            start=1
+        ):
             print(
-                f"{index}. {quiz.question}"
+                f"{i}. {quiz.question}"
             )
 
     def show_score(self):
         print(
-            f"\n최고 점수 : "
-            f"{self.best_score}"
+            f"최고 점수 : {self.best_score}"
         )
 
-    def save_data(self):
-        data = {
-            "quizzes": [
-                quiz.to_dict()
-                for quiz in self.quizzes
-            ],
-            "best_score": self.best_score
-        }
+    def delete_quiz(self):
+        self.show_quizzes()
 
-        with open(
-                "state.json",
-                "w",
-                encoding="utf-8") as file:
+        number = int(
+            input("삭제할 번호: ")
+        )
 
-            json.dump(
-                data,
-                file,
-                ensure_ascii=False,
-                indent=4
-            )
+        if 1 <= number <= len(self.quizzes):
+            self.quizzes.pop(number - 1)
 
-    def load_data(self):
-        if not os.path.exists("state.json"):
-            return
-
-        try:
-            with open(
-                    "state.json",
-                    "r",
-                    encoding="utf-8") as file:
-
-                data = json.load(file)
-
-            self.best_score = data.get(
-                "best_score",
-                0
-            )
-
-            self.quizzes = []
-
-            for item in data.get(
-                    "quizzes",
-                    []
-            ):
-                self.quizzes.append(
-                    Quiz(
-                        item["question"],
-                        item["choices"],
-                        item["answer"]
-                    )
-                )
-
-        except Exception:
-            print(
-                "저장 파일이 손상되었습니다."
-            )
+            print("삭제 완료")
