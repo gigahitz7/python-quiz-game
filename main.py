@@ -7,7 +7,11 @@ def main():
     while True:
         game.show_menu()
 
-        choice = input("선택: ")
+        choice = input("선택: ").strip()
+
+        if choice == "":
+            print("빈 입력은 허용되지 않습니다.")
+            continue
 
         if choice == "1":
             game.play_quiz()
@@ -28,9 +32,7 @@ def main():
             break
 
         else:
-            print(
-                "1~5 사이 숫자를 입력하세요."
-            )
+            print("1~5 사이 숫자를 입력하세요.")
 
 
 if __name__ == "__main__":
